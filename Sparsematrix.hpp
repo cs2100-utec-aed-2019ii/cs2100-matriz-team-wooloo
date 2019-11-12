@@ -20,19 +20,44 @@ class SparseMatrix {
       int tam_column(){return columns;}
       int tam_rows(){return rows;}
       
-      void insert(){
-
+      void insert(int columna,int fila, T dato){
+          Node<T>* aux_x = x;Node<T>* aux_y = y;
+          while (aux_x)
+          {
+            
+            aux_x->next;
+          }
+          
       }
 
       SparseMatrix& mult(){
-
+          
       }
 
       SparseMatrix& add(){
           
       }
-      SparseMatrix& transpose(){
+      
+      void erase(int _x,int _y){
+        
+      }
+
+      SparseMatrix& transpose(SparseMatrix<T>m1){
+          for (int i = 0; i < m1.tam_column; i++)
+          {
+              for (int j = 0; j < count; j++)
+              {
+                  /* code */
+              }
+          } // opcion
           
+          //cambio de coordenadas
+      }
+
+      void swap(T &a,T &b){
+          auto temp = a;
+          a = b;
+          b = temp;
       }
 
 };
@@ -48,6 +73,12 @@ class SparseMatrix {
         }
 
     return os;
+    }
+
+    template<class T>
+    ostream& operator<<(ostream &out, SparseMatrix<T> m){
+    out << m(0,0);
+    return out;
     }
 
     template<class T>
