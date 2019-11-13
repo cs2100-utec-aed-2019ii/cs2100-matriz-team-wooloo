@@ -1,6 +1,7 @@
 #ifndef SPARSEMATRIX_H
 #define SPARSEMATRIX_H
 #include<vector>
+#include<math.h>
 #include "./Node.hpp"
 
 template<typename T>
@@ -145,7 +146,7 @@ public:
           nuevo->add(i,k,suma);
       }
     }
-      clear();
+      
       nuevo->clear();
       return nuevo;
     }
@@ -155,9 +156,9 @@ public:
     }
   }
 
-  SMatrix<T>* mult_escalar(float a){
+  SMatrix<double>* mult_escalar(double a){
     cout<<"La multiplicación escalar por "<<a<<" :\n";
-      SMatrix<T>* nuevo = new SMatrix<T>(); 
+      SMatrix<double>* nuevo = new SMatrix<double>(); 
       for (int i = 0; i < cols(); i++)
       {
           for (int j = 0; j < rows(); j++)
@@ -170,7 +171,7 @@ public:
       return nuevo;
   }
 
-  SMatrix<T>* add_sum(SMatrix<T> A){
+  SMatrix<T>* add_sum(SMatrix<T> &A){
     cout<<"Suma de matrices: \n";
     if(cols() == A.cols() && rows() == A.rows()){
       SMatrix<T>* nuevo = new SMatrix<T>(); 
@@ -207,14 +208,39 @@ public:
     return nuevo;
   }
 
-  float determinant(){
-
+  T determinante(){
+    return deter(this);
   }
 
-  SMatrix<T>* inverse(){
-     if(this->determinant == 0) {cout<<"La determinante es 0, no existe la inversa \n";return nullptr;}     
+  T deter(SMatrix<T>* aux){
+    
+    if(rows()==cols()){
+      auto orden = rows(); 
+      T deter = 0;
+      if(orden ==1) return this->at(0,0);
+      else if (orden == 2) return (this->at(0,0)* this->at(1,1))-(this->at(0,1)* this->at(1,0));
+      else {
+        T suma = 0;
+        for (int i = 0; i < cols(); i++) {
+          suma = suma + (this->at(0, i) * (pow(-1, i)) * redu_ord(0, i)->determinante());
+        }
+        return suma;
+      }
+    }
     else{
-      SMatrix <T>* nuevo = new SMatrix<T>();
+      cout<<"No se puede hallar la determinante \n";
+      return 0;
+    }
+  }
+
+  SMatrix<double>* inverse(){
+    if(determinante() == 0) {cout<<"La determinante es 0, no existe la inversa \n";return nullptr;}     
+    else{
+      cout<<"Inversa: \n";
+      SMatrix <double>* inversa = new SMatrix<double>();
+      inversa = this->adj()->mult_escalar(pow(this->determinante(),-1) );
+      inversa->clear();
+      return inversa;
     }
   }
 
@@ -222,15 +248,71 @@ public:
     for (int i = 0; i < cols(); i++)
       {
           for (int j = 0; j < rows(); j++)
-          {
-              cout<<this->at(j,i)<<"\t";
-          } 
+              cout<<this->at(i,j)<<"\t"; 
           cout<<endl;
       }  
     cout<<endl;
     clear();  
   }
 
+  SMatrix<T>* cof(){
+    return cofactor(this);
+  }
+
+  SMatrix<T>* cofactor(SMatrix<T>* aux){
+    auto orden = rows();
+    SMatrix<T>* cof = new SMatrix<T>();
+    if(orden == 2){
+        cof->add(0,0,aux->at(1,1));
+        cof->add(0,1,-1*aux->at(1,0));
+        cof->add(1,0,-1*aux->at(0,1));
+        cof->add(1,1,aux->at(0,0));
+        return cof;
+    }    
+    else{
+      for (int i = 0; i < orden; i++)
+      {
+        for (int j = 0; j < orden; j++)
+        {
+           cof->add(i,j,(pow(-1,i+j))*(redu_ord(i,j))->determinante());   
+        }  
+      }  
+      cof->clear();
+      return cof;
+    }       
+  }
+  SMatrix<T>* redu_ord(int pos_fil,int pos_col){
+    auto orden = this->cols();
+    if(orden ==2){
+      return this;
+    }
+    else
+    {  SMatrix<T>* nuevo = new SMatrix<T>();     
+      vector<T> aux;
+      for (int i = 0; i < orden; i++)
+            { if (i == pos_fil)continue;
+                for (int j = 0; j < orden; j++)
+                {
+                    if (j==pos_col)continue;
+                    aux.push_back(this->at(i,j));
+                }
+            }
+        for(int j = 0;j<orden-1;j++){
+          for(int i =0;i<(orden-1);i++)
+            nuevo->add(j,i,aux[j*(orden-1)+i]);
+        }
+
+      nuevo->clear();
+      return nuevo;
+    } 
+  }
+
+  SMatrix<T>* adj(){
+    SMatrix<T>* adj = new SMatrix<T>();
+    adj = (this->cof())->transpose();
+    adj->clear();
+    return adj;
+  }
   void clear();
 };
 

@@ -28,41 +28,50 @@ int main( int, char * [])
 int main()
 {
   SMatrix<int> a;
- 
+  SMatrix<int> b;
 #ifdef NORMAL
   a.add(0, 0, 1);
   a.add(0, 1, 2);
   a.add(1, 0, 3);
   a.add(1, 1, 4);
-  
+
+  b.add(0, 0, 3);
+  b.add(0, 1, 1);
+  b.add(0, 2, 4);
+  b.add(1, 0, -1);
+  b.add(1, 1, 2);
+  b.add(1, 2, 1);
+  b.add(2, 0, 3);
+  b.add(2, 1, 2);
+  b.add(2, 2, 1);
 #else
   a.at(0,0) = 1;
   a.at(0,1) = 2;
   a.at(1,0) = 3;
   a.at(1,1) = 4;
 #endif
-  cout << a.at(0,0) << "\t" << a.at(0,1) << endl;
-  cout << a.at(1,0) << "\t" << a.at(1,1) << endl;
-  cout<<endl;
-  
-  
+  b.print();
+  //a.print();
+  //SMatrix<int>* c = a.mult_escalar(3);
+  //c->print();
+  //SMatrix<int>* d = a.add_sum(*c);
+  //d->print();
+  //SMatrix<int>* e = b.transpose();
+  //e->print();
+  //auto f = b.multvec(b);
+  //f->print();
 
-  auto c = a.mult_escalar(3);
-  cout << c->at(0,0) << "\t" << c->at(0,1) << endl;
-  cout << c->at(1,0) << "\t" << c->at(1,1) << endl;
-  cout<<endl;
-  auto d = a.add_sum(*c);
-  cout << d->at(0,0) << "\t" << d->at(0,1) << endl;
-  cout << d->at(1,0) << "\t" << d->at(1,1) << endl;
-  cout<<endl;
-  auto e = d->transpose();
-  cout << e->at(0,0) << "\t" << e->at(0,1) << endl;
-  cout << e->at(1,0) << "\t" << e->at(1,1) << endl;
-  cout<<endl;
-  auto f = a.multvec(a);
-  cout << f->at(0,0) << "\t" << f->at(0,1) << endl;
-  cout << f->at(1,0) << "\t" << f->at(1,1) << endl;
-  cout<<endl;
+   auto g = b.redu_ord(0,0);
+ // cout<<g->rows()<<endl;
+  g->print();
+  cout<<b.determinante()<<endl;
+  auto h = b.cof();  
+  h->print();
+
+  
+  auto inversa = b.inverse();
+  inversa->print();
+  //cout<<a.multvec(a)->determinant()<<endl;
  /* for(int i = 0; i < 100; i++)
   {
     for(int j = 0; j < 100; j++)
@@ -71,9 +80,12 @@ int main()
       //a.add(i, j, i+j);
     }
   }*/
-  f->clear();
-  e->clear();
-  c->clear();
+   g->clear();
+   h->clear();
+  //e->clear();
+  //c->clear();
+  //d->clear();
   a.clear();
+  b.clear();
   return 0;
 }
