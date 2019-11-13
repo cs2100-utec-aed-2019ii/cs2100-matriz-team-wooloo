@@ -2,6 +2,7 @@
 #define SPARSEMATRIX_H
 #include<vector>
 #include<math.h>
+#include<iomanip>
 #include "./Node.hpp"
 
 template<typename T>
@@ -61,6 +62,9 @@ public:
     temp->down = col->down;
     col->down = temp;
     return temp->data;
+  }
+  void insert(int y,int x,T value){
+    add(y,x,value);
   }
   void add(int y, int x, T value)
   {
@@ -129,8 +133,54 @@ public:
   }
 
 //propios de matriz ----------------------------
+ //SIn punteros
+  SMatrix<T> multv(SMatrix<T> &A){
+    if(cols() == A.rows()){
+      cout<<"La multiplicación vectorial:\n";
+      SMatrix<T> nuevo;
+    for (int k = 0; k < A.cols(); k++)
+    {  
+      for (int i = 0; i < rows(); i++)
+      {   T suma = 0;
+        for (int j = 0; j < cols(); j++)
+        {
+            suma = suma+ (this->at(i,j)*A.at(j,k));
+        }
+          nuevo.add(i,k,suma);
+      }
+    }
+      
+      nuevo.clear();
+      return nuevo;
+    }
+    else{
+      throw invalid_argument("No se puede multiplicar");
+    }
+  }
+
+  SMatrix<T> add_sums(SMatrix<T> &A){
+    cout<<"Suma de matrices: \n";
+    if(cols() == A.cols() && rows() == A.rows()){
+      SMatrix<T> nuevo ; 
+      for (int i = 0; i < cols(); i++)
+      {
+          for (int j = 0; j < rows(); j++)
+          {
+              nuevo.add(j,i,this->at(j,i)+A.at(j,i));
+          } 
+      }  
+      clear();
+      nuevo.clear();
+      return nuevo;
+    }
+    else{
+     throw invalid_argument("No se puede multiplicar");
+    }
+  }
 
 
+
+// con retorno de punteros -----------------
   SMatrix<T>* multvec(SMatrix<T> A){
     if(cols() == A.rows()){
       cout<<"La multiplicación vectorial:\n";
@@ -245,10 +295,10 @@ public:
   }
 
   void print(){
-    for (int i = 0; i < cols(); i++)
+    for (int i = 0; i < rows(); i++)
       {
-          for (int j = 0; j < rows(); j++)
-              cout<<this->at(i,j)<<"\t"; 
+          for (int j = 0; j < cols(); j++)
+              cout<<setw(15)<<this->at(i,j); 
           cout<<endl;
       }  
     cout<<endl;
@@ -314,6 +364,8 @@ public:
     return adj;
   }
   void clear();
+
+  
 };
 
 template<typename T>
@@ -332,5 +384,18 @@ void SMatrix<T>::clear()
     }
   }
 }
+
+//template<typename T>
+//ostream& operator << (ostream &os, SMatrix<T> &p)
+//{
+//    for (int i = 0; i < p.rows(); i++)
+//      {
+//          for (int j = 0; j < p.cols(); j++)
+//              os<<setw(4)<<p.at(i,j); 
+//          os<<"\n";
+//      }  
+//    p.clear(); 
+//    return os;
+//}
 
 #endif

@@ -24,11 +24,28 @@ int main( int, char * [])
 
 #include "./SparseMatrix.hpp"
 #define NORMAL
+  template<class T>
+  SMatrix<T> mult(SMatrix<T> &A,SMatrix<T>&B){
+      return A.multv(B);
+  }
+  template<class T>
+  SMatrix<T> add(SMatrix<T> &A,SMatrix<T>&B){
+      return A.add_sums(B);
+  }
+  template<class T>
+  SMatrix<T> transpose(SMatrix<T> &A){
+      return *A.transpose();
+  }
+
+  template<class T>
+  SMatrix<double> inv(SMatrix<T> &A){
+      return *A.inverse();
+  }
 
 int main()
 {
-  SMatrix<int> a;
-  SMatrix<int> b;
+  SMatrix<double> a;
+  SMatrix<double> b;
 #ifdef NORMAL
   a.add(0, 0, 1);
   a.add(0, 1, 2);
@@ -50,9 +67,24 @@ int main()
   a.at(1,0) = 3;
   a.at(1,1) = 4;
 #endif
-  b.print();
+  srand(time(NULL));
+   SMatrix<double> m1;
+   for(int i= 0; i < 100; i++)
+     m1.insert(rand()%4,rand()%4,rand()%250);    
+  m1.print();
+  m1.inverse()->print();
+  m1.clear();
+ //| b.print();
+ //| SMatrix<double>* c = a.mult_escalar(3);
+ //| auto inversa = b.inverse();
+ //| inversa->print();
+//|
+ //| c->print();
+ //| mult(*c,*c).print();
+ //| add(*c,*c).print();
+ //| inv(b).print();
+ //| transpose(*inversa).print();
   //a.print();
-  //SMatrix<int>* c = a.mult_escalar(3);
   //c->print();
   //SMatrix<int>* d = a.add_sum(*c);
   //d->print();
@@ -61,16 +93,14 @@ int main()
   //auto f = b.multvec(b);
   //f->print();
 
-   auto g = b.redu_ord(0,0);
- // cout<<g->rows()<<endl;
-  g->print();
-  cout<<b.determinante()<<endl;
-  auto h = b.cof();  
-  h->print();
+  //auto g = b.redu_ord(0,0);
+  //g->print();
+  //cout<<b.determinante()<<endl;
+  //auto h = b.cof();  
+  //h->print();
 
   
-  auto inversa = b.inverse();
-  inversa->print();
+  
   //cout<<a.multvec(a)->determinant()<<endl;
  /* for(int i = 0; i < 100; i++)
   {
@@ -79,11 +109,11 @@ int main()
       a.at(i, j) = i+j;
       //a.add(i, j, i+j);
     }
-  }*/
-   g->clear();
-   h->clear();
-  //e->clear();
-  //c->clear();
+// }*/
+//  g->clear();
+//  h->clear();
+// //e->clear();
+ // c->clear();
   //d->clear();
   a.clear();
   b.clear();
