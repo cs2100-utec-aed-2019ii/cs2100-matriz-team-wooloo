@@ -4,6 +4,8 @@
 #include<math.h>
 #include<iomanip>
 #include "./Node.hpp"
+#include <iostream>
+using namespace std;
 
 template<typename T>
 class SMatrix
@@ -177,6 +179,36 @@ public:
      throw invalid_argument("No se puede multiplicar");
     }
   }
+
+  SMatrix<T> transposes(){
+    cout<<"Transpuesta: \n";
+    SMatrix<T> nuevo; 
+    for (int i = 0; i < cols(); i++)
+      {
+          for (int j = 0; j < rows(); j++)
+          {
+              nuevo->add(i,j,this->at(j,i));
+          } 
+      }       
+    clear();
+    nuevo->clear();
+    return nuevo;
+  }
+
+
+  SMatrix<double> inverse_s(){
+    if(determinante() == 0) {cout<<"La determinante es 0, no existe la inversa \n";}     
+    else{
+      cout<<"Inversa: \n";
+      SMatrix <double> inversa;
+      inversa = this->adj()->mult_escalar(pow(this->determinante(),-1) );
+      inversa.clear();
+      return inversa;
+    }
+  }
+
+  
+
 
 
 
@@ -385,17 +417,33 @@ void SMatrix<T>::clear()
   }
 }
 
-//template<typename T>
-//ostream& operator << (ostream &os, SMatrix<T> &p)
-//{
-//    for (int i = 0; i < p.rows(); i++)
-//      {
-//          for (int j = 0; j < p.cols(); j++)
-//              os<<setw(4)<<p.at(i,j); 
-//          os<<"\n";
-//      }  
-//    p.clear(); 
-//    return os;
-//}
+template<typename T>
+ostream& operator << (ostream &os, SMatrix<T> &p)
+{
+    for (int i = 0; i < p.rows(); i++)
+      {
+          for (int j = 0; j < p.cols(); j++)
+              os<<setw(15)<<p.at(i,j); 
+          os<<"\n";
+      }  
+    p.clear();
+    
+    return os;
+}
+
+template<typename T>
+ostream& operator << (ostream &os, SMatrix<T>* &p)
+{
+    for (int i = 0; i < p->rows(); i++)
+      {
+          for (int j = 0; j < p->cols(); j++)
+              os<<setw(15)<<p->at(i,j); 
+          os<<"\n";
+      }  
+    p->clear();
+    
+    return os;
+}
+
 
 #endif

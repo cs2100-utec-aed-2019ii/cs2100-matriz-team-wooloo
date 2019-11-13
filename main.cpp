@@ -39,7 +39,11 @@ int main( int, char * [])
 
   template<class T>
   SMatrix<double> inv(SMatrix<T> &A){
-      return *A.inverse();
+      return A.inverse_s();
+  }
+  template<class T>
+  SMatrix<double> inv(SMatrix<T>* &A){
+      return A->inverse_s();
   }
 
 int main()
@@ -70,9 +74,12 @@ int main()
   srand(time(NULL));
    SMatrix<double> m1;
    for(int i= 0; i < 100; i++)
-     m1.insert(rand()%4,rand()%4,rand()%250);    
+     m1.insert(rand()%6,rand()%6,rand()%250);    
   m1.print();
-  m1.inverse()->print();
+ // cout<<inv(m1);
+  cout<<*m1.inverse()<<endl;
+  //cout<<inv(m1);
+  cout<<m1;
   m1.clear();
  //| b.print();
  //| SMatrix<double>* c = a.mult_escalar(3);
