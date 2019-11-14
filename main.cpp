@@ -24,27 +24,7 @@ int main( int, char * [])
 
 #include "./SparseMatrix.hpp"
 #define NORMAL
-  template<class T>
-  SMatrix<T> mult(SMatrix<T> &A,SMatrix<T>&B){
-      return A.multv(B);
-  }
-  template<class T>
-  SMatrix<T> add(SMatrix<T> &A,SMatrix<T>&B){
-      return A.add_sums(B);
-  }
-  template<class T>
-  SMatrix<T> transpose(SMatrix<T> &A){
-      return *A.transpose();
-  }
-
-  template<class T>
-  SMatrix<double> inv(SMatrix<T> &A){
-      return A.inverse_s();
-  }
-  template<class T>
-  SMatrix<double> inv(SMatrix<T>* &A){
-      return A->inverse_s();
-  }
+  
 
 int main()
 {
@@ -74,37 +54,16 @@ int main()
   srand(time(NULL));
    SMatrix<double> m1;
    for(int i= 0; i < 100; i++)
-     m1.insert(rand()%6,rand()%6,rand()%250);    
+     m1.insert(rand()%4,rand()%4,rand()%250);    
+  
+  
   m1.print();
- // cout<<inv(m1);
-  cout<<*m1.inverse()<<endl;
-  //cout<<inv(m1);
-  cout<<m1;
+  m1.inverse_s().print();
+  m1.add_sums(m1).print();
+  m1.multv(m1).print();
   m1.clear();
- //| b.print();
- //| SMatrix<double>* c = a.mult_escalar(3);
- //| auto inversa = b.inverse();
- //| inversa->print();
-//|
- //| c->print();
- //| mult(*c,*c).print();
- //| add(*c,*c).print();
- //| inv(b).print();
- //| transpose(*inversa).print();
-  //a.print();
-  //c->print();
-  //SMatrix<int>* d = a.add_sum(*c);
-  //d->print();
-  //SMatrix<int>* e = b.transpose();
-  //e->print();
-  //auto f = b.multvec(b);
-  //f->print();
 
-  //auto g = b.redu_ord(0,0);
-  //g->print();
-  //cout<<b.determinante()<<endl;
-  //auto h = b.cof();  
-  //h->print();
+ 
 
   
   
@@ -117,10 +76,7 @@ int main()
       //a.add(i, j, i+j);
     }
 // }*/
-//  g->clear();
-//  h->clear();
-// //e->clear();
- // c->clear();
+
   //d->clear();
   a.clear();
   b.clear();
