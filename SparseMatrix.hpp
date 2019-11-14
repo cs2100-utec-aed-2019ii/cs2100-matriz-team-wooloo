@@ -371,7 +371,7 @@ ostream& operator << (ostream &os, SMatrix<T> &p)
 
 
 template<typename T>
-SMatrix<T>& load_from_image(string name)
+SMatrix<T> load_from_image(string name)
 {
   SMatrix<T> val;
   CImg<unsigned char> img(name.c_str());
@@ -379,40 +379,55 @@ SMatrix<T>& load_from_image(string name)
   {
     for(int j = 0; j < img.height(); j++)
     {
-      val.at(i, j) = img(i, j);
+      val.at(i, j) = (int)img(i, j);
     }
   }
   return val;
 }
 
-  template<class T>
-  SMatrix<T> mult(SMatrix<T> &A,SMatrix<T>&B){
-      return A.multv(B);
-  }
-  template<class T>
-  SMatrix<T> add(SMatrix<T> &A,SMatrix<T>&B){
-      return A.add_sums(B);
-  }
-  template<class T>
-  SMatrix<T> transpose(SMatrix<T> &A){
-      return A.transposes();
-  }
 
-  template<class T>
-  SMatrix<double> inv(SMatrix<T> &A){
-      return A.inverse_s();
-  }
-  SMatrix<double> identity(int a,int b){
-    if(a==b){
-      SMatrix<double> nuevo;
-      for (int i = 0; i < a; i++)
-      {
-          nuevo.add(i,i,1);
-      }
-      nuevo.clear();
-      return nuevo;
+template<typename T>
+CImg<unsigned char> load_to_image(SMatrix<T> val)
+{
+  CImg<unsigned char> img(val.rows(), val.cols());
+  for(int i = 0; i < img.width(); i++)
+  {
+    for(int j = 0; j < img.height(); j++)
+    {
+      img(i, j) = val.at(i, j);
     }
-    else throw invalid_argument("No se puede porque las dimensiones no son iguales");
   }
+  return img;
+}
+
+template<class T>
+SMatrix<T> mult(SMatrix<T> &A,SMatrix<T>&B){
+    return A.multv(B);
+}
+template<class T>
+SMatrix<T> add(SMatrix<T> &A,SMatrix<T>&B){
+    return A.add_sums(B);
+}
+template<class T>
+SMatrix<T> transpose(SMatrix<T> &A){
+    return A.transposes();
+}
+
+template<class T>
+SMatrix<double> inv(SMatrix<T> &A){
+    return A.inverse_s();
+}
+SMatrix<double> identity(int a,int b){
+  if(a==b){
+    SMatrix<double> nuevo;
+    for (int i = 0; i < a; i++)
+    {
+        nuevo.add(i,i,1);
+    }
+    nuevo.clear();
+    return nuevo;
+  }
+  else throw invalid_argument("No se puede porque las dimensiones no son iguales");
+}
 
 #endif
