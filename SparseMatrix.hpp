@@ -136,11 +136,20 @@ public:
     delete temp;
   }
 
-//propios de matriz ----------------------------
- //SIn punteros
+SMatrix<double> identity(int i,int j){
+    if(i == j){
+        SMatrix<double> nuevo;
+        for (int k = 0; k < i; k++)
+        {
+          nuevo.add(k,k,1);
+        }
+        return nuevo;
+    }
+    else throw invalid_argument("No se puede crear");
+}
+
   SMatrix<T> multv(SMatrix<T> &A){
     if(cols() == A.rows()){
-      cout<<"La multiplicación vectorial:\n";
       SMatrix<T> nuevo;
     for (int k = 0; k < A.cols(); k++)
     {  
@@ -161,9 +170,9 @@ public:
       throw invalid_argument("No se puede multiplicar");
     }
   }
+  
 
   SMatrix<T> add_sums(SMatrix<T> &A){
-    cout<<"Suma de matrices: \n";
     if(cols() == A.cols() && rows() == A.rows()){
       SMatrix<T> nuevo ; 
       for (int i = 0; i < cols(); i++)
@@ -183,121 +192,45 @@ public:
   }
 
   SMatrix<T> transposes(){
-    cout<<"Transpuesta: \n";
     SMatrix<T> nuevo; 
     for (int i = 0; i < cols(); i++)
       {
           for (int j = 0; j < rows(); j++)
           {
-              nuevo->add(i,j,this->at(j,i));
+              nuevo.add(i,j,this->at(j,i));
           } 
       }       
     clear();
-    nuevo->clear();
+    nuevo.clear();
     return nuevo;
   }
 
 
   SMatrix<double> inverse_s(){
-    if(determinante() == 0) {cout<<"La determinante es 0, no existe la inversa \n";}     
+    if(determinante_s() == 0) {cout<<"La determinante es 0, no existe la inversa \n";return *this;}     
     else{
-      cout<<"Inversa: \n";
-      SMatrix <double> inversa;
-      inversa = this->adj()->mult_escalar(pow(this->determinante(),-1) );
+      SMatrix <double> inversa = this->adj_s().mult_escalar_s(pow(this->determinante_s(),-1) );
       inversa.clear();
       return inversa;
     }
   }
 
-  
-
-
-
-
-// con retorno de punteros -----------------
-  SMatrix<T>* multvec(SMatrix<T> A){
-    if(cols() == A.rows()){
-      cout<<"La multiplicación vectorial:\n";
-      SMatrix<T>* nuevo = new SMatrix<T> ();
-    for (int k = 0; k < A.cols(); k++)
-    {  
-      for (int i = 0; i < rows(); i++)
-      {   T suma = 0;
-        for (int j = 0; j < cols(); j++)
-        {
-            suma = suma+ (this->at(i,j)*A.at(j,k));
-        }
-          nuevo->add(i,k,suma);
-      }
-    }
-      
-      nuevo->clear();
-      return nuevo;
-    }
-    else{
-      cout<<"No se puede multiplicar"<<endl;
-      return nullptr;
-    }
-  }
-
-  SMatrix<double>* mult_escalar(double a){
-    cout<<"La multiplicación escalar por "<<a<<" :\n";
-      SMatrix<double>* nuevo = new SMatrix<double>(); 
+  SMatrix<double> mult_escalar_s(double a){
+      SMatrix<double> nuevo; 
       for (int i = 0; i < cols(); i++)
       {
           for (int j = 0; j < rows(); j++)
           {
-              nuevo->add(j,i,this->at(j,i)*a);
+              nuevo.add(j,i,this->at(j,i)*a);
           } 
       }    
       clear();
-      nuevo->clear();
+      nuevo.clear();
       return nuevo;
   }
 
-  SMatrix<T>* add_sum(SMatrix<T> &A){
-    cout<<"Suma de matrices: \n";
-    if(cols() == A.cols() && rows() == A.rows()){
-      SMatrix<T>* nuevo = new SMatrix<T>(); 
-      for (int i = 0; i < cols(); i++)
-      {
-          for (int j = 0; j < rows(); j++)
-          {
-              nuevo->add(j,i,this->at(j,i)+A.at(j,i));
-          } 
-      }  
-      clear();
-      nuevo->clear();
-      return nuevo;
-    }
-    else{
-      cout<<"No se pueden sumar las matrices"<<endl;
-      return nullptr;
-    }
 
-  }
-
-  SMatrix<T>* transpose(){
-    cout<<"Transpuesta: \n";
-    SMatrix<T>* nuevo = new SMatrix<T>(); 
-    for (int i = 0; i < cols(); i++)
-      {
-          for (int j = 0; j < rows(); j++)
-          {
-              nuevo->add(i,j,this->at(j,i));
-          } 
-      }       
-    clear();
-    nuevo->clear();
-    return nuevo;
-  }
-
-  T determinante(){
-    return deter(this);
-  }
-
-  T deter(SMatrix<T>* aux){
-    
+  T determinante_s(){
     if(rows()==cols()){
       auto orden = rows(); 
       T deter = 0;
@@ -306,7 +239,7 @@ public:
       else {
         T suma = 0;
         for (int i = 0; i < cols(); i++) {
-          suma = suma + (this->at(0, i) * (pow(-1, i)) * redu_ord(0, i)->determinante());
+          suma = suma + (this->at(0, i) * (pow(-1, i)) * redu_ord_s(0, i).determinante_s());
         }
         return suma;
       }
@@ -317,40 +250,18 @@ public:
     }
   }
 
-  SMatrix<double>* inverse(){
-    if(determinante() == 0) {cout<<"La determinante es 0, no existe la inversa \n";return nullptr;}     
-    else{
-      cout<<"Inversa: \n";
-      SMatrix <double>* inversa = new SMatrix<double>();
-      inversa = this->adj()->mult_escalar(pow(this->determinante(),-1) );
-      inversa->clear();
-      return inversa;
-    }
+  SMatrix<T> cof_s(){
+    return cofactor_s(this);
   }
 
-  void print(){
-    for (int i = 0; i < rows(); i++)
-      {
-          for (int j = 0; j < cols(); j++)
-              cout<<setw(15)<<this->at(i,j); 
-          cout<<endl;
-      }  
-    cout<<endl;
-    clear();  
-  }
-
-  SMatrix<T>* cof(){
-    return cofactor(this);
-  }
-
-  SMatrix<T>* cofactor(SMatrix<T>* aux){
+  SMatrix<T> cofactor_s(SMatrix<T> *aux){
     auto orden = rows();
-    SMatrix<T>* cof = new SMatrix<T>();
+    SMatrix<T> cof;
     if(orden == 2){
-        cof->add(0,0,aux->at(1,1));
-        cof->add(0,1,-1*aux->at(1,0));
-        cof->add(1,0,-1*aux->at(0,1));
-        cof->add(1,1,aux->at(0,0));
+        cof.add(0,0,aux->at(1,1));
+        cof.add(0,1,-1*aux->at(1,0));
+        cof.add(1,0,-1*aux->at(0,1));
+        cof.add(1,1,aux->at(0,0));
         return cof;
     }    
     else{
@@ -358,20 +269,20 @@ public:
       {
         for (int j = 0; j < orden; j++)
         {
-           cof->add(i,j,(pow(-1,i+j))*(redu_ord(i,j))->determinante());   
+           cof.add(i,j,(pow(-1,i+j))*(redu_ord_s(i,j)).determinante_s());   
         }  
       }  
-      cof->clear();
+      cof.clear();
       return cof;
     }       
   }
-  SMatrix<T>* redu_ord(int pos_fil,int pos_col){
+  SMatrix<T> redu_ord_s(int pos_fil,int pos_col){
     auto orden = this->cols();
     if(orden ==2){
-      return this;
+      return *this;
     }
     else
-    {  SMatrix<T>* nuevo = new SMatrix<T>();     
+    {  SMatrix<T> nuevo;     
       vector<T> aux;
       for (int i = 0; i < orden; i++)
             { if (i == pos_fil)continue;
@@ -383,20 +294,30 @@ public:
             }
         for(int j = 0;j<orden-1;j++){
           for(int i =0;i<(orden-1);i++)
-            nuevo->add(j,i,aux[j*(orden-1)+i]);
+            nuevo.add(j,i,aux[j*(orden-1)+i]);
         }
-
-      nuevo->clear();
+      nuevo.clear();
       return nuevo;
     } 
   }
 
-  SMatrix<T>* adj(){
-    SMatrix<T>* adj = new SMatrix<T>();
-    adj = (this->cof())->transpose();
-    adj->clear();
+  SMatrix<T> adj_s(){
+    SMatrix<T> adj = (this->cof_s()).transposes();
+    adj.clear();
     return adj;
   }
+ 
+  void print(){
+    for (int i = 0; i < rows(); i++)
+    {
+      for (int j = 0; j < cols(); j++)
+      cout<<setw(rows()*3)<<at(i,j);
+      cout<<endl;
+    }
+    cout<<endl;
+    clear();
+  }
+
   void clear();
 
   
@@ -425,27 +346,29 @@ ostream& operator << (ostream &os, SMatrix<T> &p)
     for (int i = 0; i < p.rows(); i++)
       {
           for (int j = 0; j < p.cols(); j++)
-              os<<setw(15)<<p.at(i,j); 
+              os<<setw(p.rows()*3)<<p.at(i,j); 
           os<<"\n";
       }  
+      os<<"\n";
     p.clear();
     
     return os;
 }
 
-template<typename T>
-ostream& operator << (ostream &os, SMatrix<T>* &p)
-{
-    for (int i = 0; i < p->rows(); i++)
-      {
-          for (int j = 0; j < p->cols(); j++)
-              os<<setw(15)<<p->at(i,j); 
-          os<<"\n";
-      }  
-    p->clear();
-    
-    return os;
-}
+//template<typename T>
+//ostream& operator << (ostream &os, SMatrix<T>* &p)
+//{
+//    for (int i = 0; i < p->rows(); i++)
+//      {
+//          for (int j = 0; j < p->cols(); j++)
+//              os<<setw(15)<<p->at(i,j); 
+//          os<<"\n";
+//      }  
+//    p->clear();
+//    
+//    return os;
+//}
+
 
 template<typename T>
 SMatrix<T>& load_from_image(string name)
@@ -461,5 +384,35 @@ SMatrix<T>& load_from_image(string name)
   }
   return val;
 }
+
+  template<class T>
+  SMatrix<T> mult(SMatrix<T> &A,SMatrix<T>&B){
+      return A.multv(B);
+  }
+  template<class T>
+  SMatrix<T> add(SMatrix<T> &A,SMatrix<T>&B){
+      return A.add_sums(B);
+  }
+  template<class T>
+  SMatrix<T> transpose(SMatrix<T> &A){
+      return A.transposes();
+  }
+
+  template<class T>
+  SMatrix<double> inv(SMatrix<T> &A){
+      return A.inverse_s();
+  }
+  SMatrix<double> identity(int a,int b){
+    if(a==b){
+      SMatrix<double> nuevo;
+      for (int i = 0; i < a; i++)
+      {
+          nuevo.add(i,i,1);
+      }
+      nuevo.clear();
+      return nuevo;
+    }
+    else throw invalid_argument("No se puede porque las dimensiones no son iguales");
+  }
 
 #endif
