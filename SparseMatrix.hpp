@@ -134,8 +134,6 @@ public:
     delete temp;
   }
 
-//propios de matriz ----------------------------
- //SIn punteros
 SMatrix<double> identity(int i,int j){
     if(i == j){
         SMatrix<double> nuevo;
@@ -150,7 +148,6 @@ SMatrix<double> identity(int i,int j){
 
   SMatrix<T> multv(SMatrix<T> &A){
     if(cols() == A.rows()){
-      cout<<"La multiplicación vectorial:\n";
       SMatrix<T> nuevo;
     for (int k = 0; k < A.cols(); k++)
     {  
@@ -174,7 +171,6 @@ SMatrix<double> identity(int i,int j){
   
 
   SMatrix<T> add_sums(SMatrix<T> &A){
-    cout<<"Suma de matrices: \n";
     if(cols() == A.cols() && rows() == A.rows()){
       SMatrix<T> nuevo ; 
       for (int i = 0; i < cols(); i++)
@@ -194,7 +190,6 @@ SMatrix<double> identity(int i,int j){
   }
 
   SMatrix<T> transposes(){
-    cout<<"Transpuesta: \n";
     SMatrix<T> nuevo; 
     for (int i = 0; i < cols(); i++)
       {
@@ -212,7 +207,6 @@ SMatrix<double> identity(int i,int j){
   SMatrix<double> inverse_s(){
     if(determinante_s() == 0) {cout<<"La determinante es 0, no existe la inversa \n";return *this;}     
     else{
-      cout<<"Inversa: \n";
       SMatrix <double> inversa = this->adj_s().mult_escalar_s(pow(this->determinante_s(),-1) );
       inversa.clear();
       return inversa;
@@ -220,7 +214,6 @@ SMatrix<double> identity(int i,int j){
   }
 
   SMatrix<double> mult_escalar_s(double a){
-    cout<<"La multiplicación escalar por "<<a<<" :\n";
       SMatrix<double> nuevo; 
       for (int i = 0; i < cols(); i++)
       {
@@ -360,19 +353,19 @@ ostream& operator << (ostream &os, SMatrix<T> &p)
     return os;
 }
 
-template<typename T>
-ostream& operator << (ostream &os, SMatrix<T>* &p)
-{
-    for (int i = 0; i < p->rows(); i++)
-      {
-          for (int j = 0; j < p->cols(); j++)
-              os<<setw(15)<<p->at(i,j); 
-          os<<"\n";
-      }  
-    p->clear();
-    
-    return os;
-}
+//template<typename T>
+//ostream& operator << (ostream &os, SMatrix<T>* &p)
+//{
+//    for (int i = 0; i < p->rows(); i++)
+//      {
+//          for (int j = 0; j < p->cols(); j++)
+//              os<<setw(15)<<p->at(i,j); 
+//          os<<"\n";
+//      }  
+//    p->clear();
+//    
+//    return os;
+//}
 
 
 
@@ -393,6 +386,17 @@ ostream& operator << (ostream &os, SMatrix<T>* &p)
   SMatrix<double> inv(SMatrix<T> &A){
       return A.inverse_s();
   }
-
+  SMatrix<double> identity(int a,int b){
+    if(a==b){
+      SMatrix<double> nuevo;
+      for (int i = 0; i < a; i++)
+      {
+          nuevo.add(i,i,1);
+      }
+      nuevo.clear();
+      return nuevo;
+    }
+    else throw invalid_argument("No se puede porque las dimensiones no son iguales");
+  }
 
 #endif
