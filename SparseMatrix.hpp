@@ -5,6 +5,8 @@
 #include<iomanip>
 #include "./Node.hpp"
 #include <iostream>
+#include "CImg.h"
+using namespace cimg_library;
 using namespace std;
 
 template<typename T>
@@ -445,5 +447,19 @@ ostream& operator << (ostream &os, SMatrix<T>* &p)
     return os;
 }
 
+template<typename T>
+SMatrix<T>& load_from_image(string name)
+{
+  SMatrix<T> val;
+  CImg<unsigned char> img(name.c_str());
+  for(int i = 0; i < img.width(); i++)
+  {
+    for(int j = 0; j < img.height(); j++)
+    {
+      val.at(i, j) = img(i, j);
+    }
+  }
+  return val;
+}
 
 #endif
